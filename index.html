@@ -1,133 +1,145 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lista para o Rio de Janeiro com meu amor</title>
+  <title>Lista para o Rio com meu amor</title>
   <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background-image: url('https://m.ahstatic.com/is/image/accorhotels/praias-desertas-do-rio-de-janeiro-2024-1:16by9?fmt=webp&op_usm=1.75,0.3,2,0&resMode=sharp2&iccEmbed=true&icc=sRGB&dpr=on,1&wid=1363&hei=766&qlt=80');
+      background-image: url('fundo.png'); /* ou substitua por uma URL online */
       background-size: cover;
       background-position: center;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      background-repeat: no-repeat;
     }
+
     .container {
-      background-color: rgba(255, 255, 255, 0.9);
-      padding: 30px;
-      border-radius: 10px;
-      width: 90%;
       max-width: 400px;
+      margin: 60px auto;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 30px;
+      border-radius: 12px;
       text-align: center;
-      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     }
+
     h1 {
       font-family: 'Pacifico', cursive;
       font-size: 26px;
-      margin-bottom: 20px;
+      margin-bottom: 25px;
     }
+
     input[type="text"] {
-      width: 100%;
+      width: 90%;
       padding: 10px;
-      margin-bottom: 15px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
       font-size: 16px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      text-align: center;
     }
+
     ul {
-      list-style-type: none;
+      list-style: none;
       padding: 0;
-      text-align: left;
     }
+
     li {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
       padding: 8px;
-      border-bottom: 1px solid #ddd;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
+
     li.completed {
       display: none;
     }
-    .delete-btn {
-      background: transparent;
-      border: none;
-      color: rgba(0, 0, 0, 0.3);
+
+    li span {
+      flex-grow: 1;
+      text-align: left;
       cursor: pointer;
-      font-size: 18px;
     }
-    #toggleCompleted {
+
+    .delete-btn {
       background: none;
       border: none;
-      color: #333;
-      font-size: 14px;
+      color: rgba(0,0,0,0.3);
+      font-size: 16px;
       cursor: pointer;
-      margin-top: 15px;
-      text-decoration: underline;
     }
-    .section-title {
+
+    h2 {
+      font-size: 18px;
+      margin-top: 30px;
       font-weight: bold;
-      margin-top: 20px;
-      margin-bottom: 5px;
+    }
+
+    .toggle-btn {
+      background: none;
+      border: none;
+      color: #444;
+      cursor: pointer;
+      font-size: 14px;
+      text-decoration: underline;
+      margin-top: 5px;
     }
   </style>
 </head>
 <body>
+
   <div class="container">
     <h1>Lista para o rio de janeiro com meu amor</h1>
-    <input type="text" id="newTask" placeholder="Digite uma nova tarefa" onkeydown="if(event.key==='Enter') addTask()">
+    <input type="text" id="tarefaInput" placeholder="Digite uma nova tarefa">
 
-    <div class="section-title">Não esquecer</div>
-    <ul id="taskList"></ul>
+    <h2>Não esquecer</h2>
+    <ul id="listaTarefas"></ul>
 
-    <button id="toggleCompleted" onclick="toggleCompleted()">Ver marcados</button>
-    <ul id="completedList"></ul>
+    <button class="toggle-btn" onclick="toggleConcluidas()">Ver marcados</button>
+    <ul id="listaConcluidas" style="display: none;"></ul>
   </div>
 
   <script>
-    const taskList = document.getElementById('taskList');
-    const completedList = document.getElementById('completedList');
-    const newTaskInput = document.getElementById('newTask');
-    let showCompleted = false;
+    const tarefaInput = document.getElementById('tarefaInput');
+    const listaTarefas = document.getElementById('listaTarefas');
+    const listaConcluidas = document.getElementById('listaConcluidas');
+    let mostrandoConcluidas = false;
 
-    function addTask() {
-      const taskText = newTaskInput.value.trim();
-      if (taskText === '') return;
+    tarefaInput.addEventListener('keypress', function(event) {
+      if (event.key === 'Enter' && tarefaInput.value.trim() !== '') {
+        adicionarTarefa(tarefaInput.value);
+        tarefaInput.value = '';
+      }
+    });
+
+    function adicionarTarefa(texto) {
       const li = document.createElement('li');
-      const checkbox = document.createElement('input');
-      checkbox.type = 'checkbox';
-      checkbox.onchange = function() {
-        if (checkbox.checked) {
-          li.classList.add('completed');
-          completedList.appendChild(li);
-        }
-      };
+
       const span = document.createElement('span');
-      span.textContent = taskText;
-      const deleteBtn = document.createElement('button');
-      deleteBtn.textContent = 'x';
-      deleteBtn.className = 'delete-btn';
-      deleteBtn.onclick = () => li.remove();
-      li.appendChild(checkbox);
+      span.textContent = texto;
+      span.onclick = () => marcarComoConcluida(li);
+
+      const btn = document.createElement('button');
+      btn.textContent = 'x';
+      btn.className = 'delete-btn';
+      btn.onclick = () => li.remove();
+
       li.appendChild(span);
-      li.appendChild(deleteBtn);
-      taskList.appendChild(li);
-      newTaskInput.value = '';
+      li.appendChild(btn);
+      listaTarefas.appendChild(li);
     }
 
-    function toggleCompleted() {
-      showCompleted = !showCompleted;
-      const completedTasks = completedList.querySelectorAll('li');
-      completedTasks.forEach(li => {
-        li.style.display = showCompleted ? 'flex' : 'none';
-      });
-      document.getElementById('toggleCompleted').textContent = showCompleted ? 'Ocultar marcados' : 'Ver marcados';
+    function marcarComoConcluida(li) {
+      li.classList.add('completed');
+      listaConcluidas.appendChild(li);
+    }
+
+    function toggleConcluidas() {
+      mostrandoConcluidas = !mostrandoConcluidas;
+      listaConcluidas.style.display = mostrandoConcluidas ? 'block' : 'none';
     }
   </script>
+
 </body>
 </html>
