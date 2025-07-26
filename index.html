@@ -2,152 +2,137 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Lista para o Rio com meu amor</title>
-  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lista Rio com Amor</title>
   <style>
     body {
-      margin: 0;
       font-family: Arial, sans-serif;
-      background-image: url('https://upload.wikimedia.org/wikipedia/commons/6/65/Rio_de_Janeiro_-_Rafael_Defavari.jpg');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
+      background: linear-gradient(to bottom, #f5f5f5, #e0f7fa);
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+
+    header {
+      background-color: #00bcd4;
+      color: white;
+      padding: 20px;
+      font-size: 24px;
+      font-weight: bold;
     }
 
     .container {
-      max-width: 400px;
-      margin: 60px auto;
-      background: rgba(255, 255, 255, 0.9);
-      padding: 30px;
-      border-radius: 12px;
-      text-align: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    }
-
-    h1 {
-      font-family: 'Pacifico', cursive;
-      font-size: 26px;
-      margin-bottom: 25px;
+      max-width: 500px;
+      margin: 30px auto;
+      padding: 20px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
 
     input[type="text"] {
-      width: 90%;
+      width: 70%;
       padding: 10px;
-      font-size: 16px;
-      border-radius: 6px;
+      margin-right: 10px;
+      border-radius: 5px;
       border: 1px solid #ccc;
-      text-align: center;
+    }
+
+    button {
+      padding: 10px 15px;
+      background-color: #00796b;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #004d40;
     }
 
     ul {
       list-style: none;
       padding: 0;
+      margin-top: 20px;
     }
 
     li {
-      padding: 8px;
+      text-align: left;
+      padding: 10px;
       border-bottom: 1px solid #eee;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
     }
 
-    li.completed {
-      opacity: 0.5;
-    }
-
-    li input[type="checkbox"] {
-      margin-right: 10px;
-    }
-
-    li input[type="text"] {
-      border: none;
-      background: transparent;
-      flex-grow: 1;
-      font-size: 14px;
-    }
-
-    li input[type="text"]:focus {
-      outline: none;
-      background: #f0f0f0;
-    }
-
-    .delete-btn {
-      background: none;
-      border: none;
-      color: rgba(0,0,0,0.3);
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    h2 {
-      font-size: 18px;
+    footer {
       margin-top: 30px;
-      font-weight: bold;
+      color: #888;
+      font-size: 14px;
     }
   </style>
 </head>
 <body>
+  <header>
+    Lista Rio com Amor 💙
+  </header>
 
   <div class="container">
-    <h1>Lista para o rio de janeiro com meu amor</h1>
-    <input type="text" id="tarefaInput" placeholder="Digite uma nova tarefa">
-
-    <h2>Não esquecer</h2>
-    <ul id="listaTarefas"></ul>
-
-    <h2>Concluídos</h2>
-    <ul id="listaConcluidas"></ul>
+    <h2>Deixe aqui seus lembretes para viver o Rio com amor!</h2>
+    <input type="text" id="input-lembrete" placeholder="Ex: Trilha do Morro da Urca ao nascer do sol 🌄">
+    <button id="botao-adicionar">Adicionar</button>
+    <ul id="lista-lembretes"></ul>
   </div>
 
-  <script>
-    const tarefaInput = document.getElementById('tarefaInput');
-    const listaTarefas = document.getElementById('listaTarefas');
-    const listaConcluidas = document.getElementById('listaConcluidas');
+  <footer>
+    Feito com 💛 para momentos inesquecíveis no Rio
+  </footer>
 
-    tarefaInput.addEventListener('keypress', function(event) {
-      if (event.key === 'Enter' && tarefaInput.value.trim() !== '') {
-        adicionarTarefa(tarefaInput.value);
-        tarefaInput.value = '';
-      }
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
+
+  <script>
+    // Configuração do Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyCQVl1uoy3AK7aMrGACfPY4vfRWmnlYmWg",
+      authDomain: "lista-rio-com-amor.firebaseapp.com",
+      projectId: "lista-rio-com-amor",
+      storageBucket: "lista-rio-com-amor.firebasestorage.app",
+      messagingSenderId: "168576423427",
+      appId: "1:168576423427:web:91e9a96e7395dc4be5a036"
+    };
+
+    // Inicializar Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // Função para adicionar lembrete
+    function adicionarLembrete(texto) {
+      if (texto.trim() === "") return;
+      db.collection("lembretes").add({
+        texto: texto,
+        feito: false,
+        criadoEm: new Date()
+      });
+      document.getElementById("input-lembrete").value = "";
+    }
+
+    // Evento do botão
+    document.getElementById("botao-adicionar").addEventListener("click", () => {
+      const texto = document.getElementById("input-lembrete").value;
+      adicionarLembrete(texto);
     });
 
-    function adicionarTarefa(texto, concluida = false) {
-      const li = document.createElement('li');
-      if (concluida) li.classList.add('completed');
-
-      const checkbox = document.createElement('input');
-      checkbox.type = 'checkbox';
-      checkbox.checked = concluida;
-      checkbox.onchange = () => {
-        li.classList.toggle('completed');
-        if (checkbox.checked) {
-          listaConcluidas.appendChild(li);
-        } else {
-          listaTarefas.appendChild(li);
-        }
-      };
-
-      const inputTexto = document.createElement('input');
-      inputTexto.type = 'text';
-      inputTexto.value = texto;
-
-      const btn = document.createElement('button');
-      btn.textContent = 'x';
-      btn.className = 'delete-btn';
-      btn.onclick = () => li.remove();
-
-      li.appendChild(checkbox);
-      li.appendChild(inputTexto);
-      li.appendChild(btn);
-
-      if (concluida) {
-        listaConcluidas.appendChild(li);
-      } else {
-        listaTarefas.appendChild(li);
-      }
-    }
+    // Carregar os lembretes em tempo real
+    db.collection("lembretes").orderBy("criadoEm").onSnapshot((snapshot) => {
+      const lista = document.getElementById("lista-lembretes");
+      lista.innerHTML = "";
+      snapshot.forEach((doc) => {
+        const dado = doc.data();
+        const li = document.createElement("li");
+        li.textContent = dado.texto;
+        lista.appendChild(li);
+      });
+    });
   </script>
-
 </body>
 </html>
