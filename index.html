@@ -8,7 +8,7 @@
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background-image: url('fundo.png'); /* ou substitua por uma URL online */
+      background-image: url('https://upload.wikimedia.org/wikipedia/commons/6/65/Rio_de_Janeiro_-_Rafael_Defavari.jpg');
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
@@ -53,13 +53,23 @@
     }
 
     li.completed {
-      display: none;
+      opacity: 0.5;
     }
 
-    li span {
+    li input[type="checkbox"] {
+      margin-right: 10px;
+    }
+
+    li input[type="text"] {
+      border: none;
+      background: transparent;
       flex-grow: 1;
-      text-align: left;
-      cursor: pointer;
+      font-size: 14px;
+    }
+
+    li input[type="text"]:focus {
+      outline: none;
+      background: #f0f0f0;
     }
 
     .delete-btn {
@@ -75,16 +85,6 @@
       margin-top: 30px;
       font-weight: bold;
     }
-
-    .toggle-btn {
-      background: none;
-      border: none;
-      color: #444;
-      cursor: pointer;
-      font-size: 14px;
-      text-decoration: underline;
-      margin-top: 5px;
-    }
   </style>
 </head>
 <body>
@@ -96,15 +96,14 @@
     <h2>Não esquecer</h2>
     <ul id="listaTarefas"></ul>
 
-    <button class="toggle-btn" onclick="toggleConcluidas()">Ver marcados</button>
-    <ul id="listaConcluidas" style="display: none;"></ul>
+    <h2>Concluídos</h2>
+    <ul id="listaConcluidas"></ul>
   </div>
 
   <script>
     const tarefaInput = document.getElementById('tarefaInput');
     const listaTarefas = document.getElementById('listaTarefas');
     const listaConcluidas = document.getElementById('listaConcluidas');
-    let mostrandoConcluidas = false;
 
     tarefaInput.addEventListener('keypress', function(event) {
       if (event.key === 'Enter' && tarefaInput.value.trim() !== '') {
@@ -113,31 +112,40 @@
       }
     });
 
-    function adicionarTarefa(texto) {
+    function adicionarTarefa(texto, concluida = false) {
       const li = document.createElement('li');
+      if (concluida) li.classList.add('completed');
 
-      const span = document.createElement('span');
-      span.textContent = texto;
-      span.onclick = () => marcarComoConcluida(li);
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.checked = concluida;
+      checkbox.onchange = () => {
+        li.classList.toggle('completed');
+        if (checkbox.checked) {
+          listaConcluidas.appendChild(li);
+        } else {
+          listaTarefas.appendChild(li);
+        }
+      };
+
+      const inputTexto = document.createElement('input');
+      inputTexto.type = 'text';
+      inputTexto.value = texto;
 
       const btn = document.createElement('button');
       btn.textContent = 'x';
       btn.className = 'delete-btn';
       btn.onclick = () => li.remove();
 
-      li.appendChild(span);
+      li.appendChild(checkbox);
+      li.appendChild(inputTexto);
       li.appendChild(btn);
-      listaTarefas.appendChild(li);
-    }
 
-    function marcarComoConcluida(li) {
-      li.classList.add('completed');
-      listaConcluidas.appendChild(li);
-    }
-
-    function toggleConcluidas() {
-      mostrandoConcluidas = !mostrandoConcluidas;
-      listaConcluidas.style.display = mostrandoConcluidas ? 'block' : 'none';
+      if (concluida) {
+        listaConcluidas.appendChild(li);
+      } else {
+        listaTarefas.appendChild(li);
+      }
     }
   </script>
 
