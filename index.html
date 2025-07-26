@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lista de Tarefas - Rio de Janeiro</title>
+  <title>Lista para o rio de janeiro com meu amor</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: url('https://images.unsplash.com/photo-1508873696983-2dfd5898f375?auto=format&fit=crop&w=1350&q=80') no-repeat center center fixed;
+      background: url('https://m.ahstatic.com/is/image/accorhotels/praias-desertas-do-rio-de-janeiro-2024-1:16by9?fmt=webp&op_usm=1.75,0.3,2,0&resMode=sharp2&iccEmbed=true&icc=sRGB&dpr=on,1&wid=1363&hei=766&qlt=80') no-repeat center center fixed;
       background-size: cover;
       margin: 0;
       padding: 0;
@@ -66,11 +66,19 @@
     button:hover {
       background-color: #1976D2;
     }
+
+    .delete-button {
+      background-color: #f44336;
+    }
+
+    .delete-button:hover {
+      background-color: #c62828;
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>Lista de Tarefas 🌞 Rio</h2>
+    <h2>Lista para o rio de janeiro com meu amor</h2>
     <input type="text" id="novaTarefa" placeholder="Digite uma nova tarefa">
     <button onclick="adicionarTarefa()">Adicionar</button>
 
@@ -87,6 +95,12 @@
       const texto = input.value.trim();
       if (texto === '') return;
 
+      const li = criarItemLista(texto);
+      document.getElementById('tarefasPendentes').appendChild(li);
+      input.value = '';
+    }
+
+    function criarItemLista(texto) {
       const li = document.createElement('li');
       const checkbox = document.createElement('input');
       checkbox.type = 'checkbox';
@@ -95,11 +109,16 @@
       const span = document.createElement('span');
       span.textContent = texto;
 
+      const deleteBtn = document.createElement('button');
+      deleteBtn.textContent = 'Excluir';
+      deleteBtn.className = 'delete-button';
+      deleteBtn.onclick = () => li.remove();
+
       li.appendChild(checkbox);
       li.appendChild(span);
+      li.appendChild(deleteBtn);
 
-      document.getElementById('tarefasPendentes').appendChild(li);
-      input.value = '';
+      return li;
     }
 
     function moverParaConcluidas(item) {
