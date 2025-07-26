@@ -1,138 +1,129 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Lista Rio com Amor</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lista para o Rio com meu amor</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(to bottom, #f5f5f5, #e0f7fa);
+      font-family: 'Segoe UI', sans-serif;
+      background: url('https://m.ahstatic.com/is/image/accorhotels/praias-desertas-do-rio-de-janeiro-2024-1:16by9?fmt=webp&op_usm=1.75,0.3,2,0&resMode=sharp2&iccEmbed=true&icc=sRGB&dpr=on,1&wid=1363&hei=766&qlt=80') no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
       margin: 0;
-      padding: 0;
-      text-align: center;
     }
-
-    header {
-      background-color: #00bcd4;
-      color: white;
-      padding: 20px;
-      font-size: 24px;
-      font-weight: bold;
-    }
-
     .container {
-      max-width: 500px;
-      margin: 30px auto;
-      padding: 20px;
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: 15px;
+      padding: 30px;
+      text-align: center;
+      max-width: 400px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
     }
-
+    h1 {
+      font-family: 'Brush Script MT', cursive;
+      font-size: 24px;
+    }
     input[type="text"] {
-      width: 70%;
+      width: 100%;
       padding: 10px;
-      margin-right: 10px;
-      border-radius: 5px;
+      margin: 15px 0;
       border: 1px solid #ccc;
-    }
-
-    button {
-      padding: 10px 15px;
-      background-color: #00796b;
-      color: white;
-      border: none;
       border-radius: 5px;
-      cursor: pointer;
     }
-
-    button:hover {
-      background-color: #004d40;
-    }
-
     ul {
       list-style: none;
       padding: 0;
-      margin-top: 20px;
+      margin: 10px 0;
     }
-
     li {
-      text-align: left;
+      background-color: #f7f7f7;
+      margin-bottom: 10px;
       padding: 10px;
-      border-bottom: 1px solid #eee;
+      border-radius: 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
-
-    footer {
-      margin-top: 30px;
-      color: #888;
-      font-size: 14px;
+    li.concluido {
+      text-decoration: line-through;
+      opacity: 0.5;
+    }
+    .botoes {
+      display: flex;
+      gap: 10px;
+    }
+    button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 16px;
+    }
+    .secao {
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
-  <header>
-    Lista Rio com Amor 💙
-  </header>
-
   <div class="container">
-    <h2>Deixe aqui seus lembretes para viver o Rio com amor!</h2>
-    <input type="text" id="input-lembrete" placeholder="Ex: Trilha do Morro da Urca ao nascer do sol 🌄">
-    <button id="botao-adicionar">Adicionar</button>
-    <ul id="lista-lembretes"></ul>
+    <h1>Lista para o rio de janeiro com meu amor</h1>
+    <input type="text" id="novaTarefa" placeholder="Digite uma nova tarefa" />
+    <div class="secao">
+      <h3>Não esquecer</h3>
+      <ul id="listaTarefas"></ul>
+    </div>
+    <div class="secao">
+      <h3>Ver marcados</h3>
+      <ul id="listaConcluidos"></ul>
+    </div>
   </div>
 
-  <footer>
-    Feito com 💛 para momentos inesquecíveis no Rio
-  </footer>
-
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
-
   <script>
-    // Configuração do Firebase
-    const firebaseConfig = {
-      apiKey: "AIzaSyCQVl1uoy3AK7aMrGACfPY4vfRWmnlYmWg",
-      authDomain: "lista-rio-com-amor.firebaseapp.com",
-      projectId: "lista-rio-com-amor",
-      storageBucket: "lista-rio-com-amor.firebasestorage.app",
-      messagingSenderId: "168576423427",
-      appId: "1:168576423427:web:91e9a96e7395dc4be5a036"
-    };
+    const input = document.getElementById("novaTarefa");
+    const listaTarefas = document.getElementById("listaTarefas");
+    const listaConcluidos = document.getElementById("listaConcluidos");
 
-    // Inicializar Firebase
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
+    input.addEventListener("keypress", function (e) {
+      if (e.key === "Enter" && input.value.trim() !== "") {
+        adicionarTarefa(input.value);
+        input.value = "";
+      }
+    });
 
-    // Função para adicionar lembrete
-    function adicionarLembrete(texto) {
-      if (texto.trim() === "") return;
-      db.collection("lembretes").add({
-        texto: texto,
-        feito: false,
-        criadoEm: new Date()
-      });
-      document.getElementById("input-lembrete").value = "";
+    function adicionarTarefa(texto) {
+      const li = document.createElement("li");
+      const span = document.createElement("span");
+      span.contentEditable = true;
+      span.innerText = texto;
+
+      const btnConcluir = document.createElement("button");
+      btnConcluir.innerText = "✓";
+      btnConcluir.onclick = () => {
+        li.remove();
+        span.classList.add("concluido");
+        const liConcluido = document.createElement("li");
+        liConcluido.classList.add("concluido");
+        liConcluido.appendChild(span);
+        listaConcluidos.appendChild(liConcluido);
+      };
+
+      const btnExcluir = document.createElement("button");
+      btnExcluir.innerText = "x";
+      btnExcluir.onclick = () => li.remove();
+
+      const botoes = document.createElement("div");
+      botoes.className = "botoes";
+      botoes.appendChild(btnConcluir);
+      botoes.appendChild(btnExcluir);
+
+      li.appendChild(span);
+      li.appendChild(botoes);
+      listaTarefas.appendChild(li);
     }
-
-    // Evento do botão
-    document.getElementById("botao-adicionar").addEventListener("click", () => {
-      const texto = document.getElementById("input-lembrete").value;
-      adicionarLembrete(texto);
-    });
-
-    // Carregar os lembretes em tempo real
-    db.collection("lembretes").orderBy("criadoEm").onSnapshot((snapshot) => {
-      const lista = document.getElementById("lista-lembretes");
-      lista.innerHTML = "";
-      snapshot.forEach((doc) => {
-        const dado = doc.data();
-        const li = document.createElement("li");
-        li.textContent = dado.texto;
-        lista.appendChild(li);
-      });
-    });
   </script>
 </body>
 </html>
