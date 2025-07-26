@@ -1,131 +1,142 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Lista para o rio de janeiro com meu amor</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: url('https://m.ahstatic.com/is/image/accorhotels/praias-desertas-do-rio-de-janeiro-2024-1:16by9?fmt=webp&op_usm=1.75,0.3,2,0&resMode=sharp2&iccEmbed=true&icc=sRGB&dpr=on,1&wid=1363&hei=766&qlt=80') no-repeat center center fixed;
-      background-size: cover;
       margin: 0;
-      padding: 0;
+      font-family: Arial, sans-serif;
+      background-image: url('https://m.ahstatic.com/is/image/accorhotels/praias-desertas-do-rio-de-janeiro-2024-1:16by9?fmt=webp&op_usm=1.75,0.3,2,0&resMode=sharp2&iccEmbed=true&icc=sRGB&dpr=on,1&wid=1363&hei=766&qlt=80');
+      background-size: cover;
+      background-position: center;
       display: flex;
       justify-content: center;
-      align-items: flex-start;
-      min-height: 100vh;
-      backdrop-filter: brightness(0.85);
-    }
-
-    .container {
-      background-color: rgba(255, 255, 255, 0.9);
-      border-radius: 12px;
-      padding: 20px;
-      margin: 40px 10px;
-      max-width: 400px;
-      width: 100%;
-      box-shadow: 0 0 15px rgba(0,0,0,0.3);
-    }
-
-    h2 {
-      text-align: center;
-      margin-top: 0;
-    }
-
-    ul {
-      list-style: none;
-      padding: 0;
-    }
-
-    li {
-      margin-bottom: 10px;
-      display: flex;
       align-items: center;
-      justify-content: space-between;
+      height: 100vh;
     }
-
+    .container {
+      background: rgba(255, 255, 255, 0.9);
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+    }
+    h1 {
+      font-family: 'Pacifico', cursive;
+      font-size: 24px;
+      color: #333;
+    }
     input[type="text"] {
       width: 100%;
       padding: 10px;
+      margin-top: 15px;
       margin-bottom: 15px;
       border-radius: 6px;
       border: 1px solid #ccc;
+      font-size: 16px;
     }
-
-    button {
-      padding: 8px 12px;
-      margin-left: 8px;
-      border: none;
-      border-radius: 6px;
-      background-color: #2196F3;
-      color: white;
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    li {
+      padding: 8px;
+      margin-bottom: 5px;
+      background: #f1f1f1;
+      border-radius: 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .delete {
       cursor: pointer;
+      color: transparent;
+      border: none;
+      background: none;
+      font-weight: bold;
+      font-size: 18px;
+      opacity: 0.3;
+      transition: opacity 0.3s;
     }
-
-    button:hover {
-      background-color: #1976D2;
+    .delete:hover {
+      opacity: 0.8;
+      color: #333;
     }
-
-    .delete-button {
-      background-color: #f44336;
+    #completedTasks {
+      display: none;
+      margin-top: 10px;
     }
-
-    .delete-button:hover {
-      background-color: #c62828;
+    .toggle-completed {
+      margin-top: 15px;
+      font-size: 14px;
+      cursor: pointer;
+      color: #555;
+      text-decoration: underline;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>Lista para o rio de janeiro com meu amor</h2>
-    <input type="text" id="novaTarefa" placeholder="Digite uma nova tarefa">
-    <button onclick="adicionarTarefa()">Adicionar</button>
+    <h1>Lista para o rio de janeiro com meu amor</h1>
+    <input type="text" id="taskInput" placeholder="Digite uma nova tarefa" />
 
-    <h3>Pendentes</h3>
-    <ul id="tarefasPendentes"></ul>
+    <h3>Não esquecer</h3>
+    <ul id="taskList"></ul>
 
-    <h3>Concluídas</h3>
-    <ul id="tarefasConcluidas"></ul>
+    <div class="toggle-completed" onclick="toggleCompletedTasks()">Ver marcados</div>
+    <ul id="completedTasks"></ul>
   </div>
 
   <script>
-    function adicionarTarefa() {
-      const input = document.getElementById('novaTarefa');
-      const texto = input.value.trim();
-      if (texto === '') return;
+    const taskInput = document.getElementById("taskInput");
+    const taskList = document.getElementById("taskList");
+    const completedTasks = document.getElementById("completedTasks");
 
-      const li = criarItemLista(texto);
-      document.getElementById('tarefasPendentes').appendChild(li);
-      input.value = '';
-    }
+    taskInput.addEventListener("keypress", function (e) {
+      if (e.key === "Enter" && taskInput.value.trim() !== "") {
+        addTask(taskInput.value.trim());
+        taskInput.value = "";
+      }
+    });
 
-    function criarItemLista(texto) {
-      const li = document.createElement('li');
-      const checkbox = document.createElement('input');
-      checkbox.type = 'checkbox';
-      checkbox.onchange = () => moverParaConcluidas(li);
+    function addTask(taskText) {
+      const li = document.createElement("li");
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.addEventListener("change", function () {
+        if (checkbox.checked) {
+          completedTasks.appendChild(li);
+          li.style.display = "none";
+        }
+      });
 
-      const span = document.createElement('span');
-      span.textContent = texto;
+      const text = document.createElement("span");
+      text.textContent = taskText;
 
-      const deleteBtn = document.createElement('button');
-      deleteBtn.textContent = 'Excluir';
-      deleteBtn.className = 'delete-button';
-      deleteBtn.onclick = () => li.remove();
+      const del = document.createElement("button");
+      del.textContent = "x";
+      del.className = "delete";
+      del.onclick = function () {
+        li.remove();
+      };
 
       li.appendChild(checkbox);
-      li.appendChild(span);
-      li.appendChild(deleteBtn);
-
-      return li;
+      li.appendChild(text);
+      li.appendChild(del);
+      taskList.appendChild(li);
     }
 
-    function moverParaConcluidas(item) {
-      const checkbox = item.querySelector('input[type="checkbox"]');
-      checkbox.disabled = true;
-      document.getElementById('tarefasPendentes').removeChild(item);
-      document.getElementById('tarefasConcluidas').appendChild(item);
+    function toggleCompletedTasks() {
+      if (completedTasks.style.display === "none") {
+        completedTasks.style.display = "block";
+      } else {
+        completedTasks.style.display = "none";
+      }
     }
   </script>
 </body>
