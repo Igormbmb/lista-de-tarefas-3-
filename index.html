@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lista de Tarefas - Rio de Janeiro</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: url('https://images.unsplash.com/photo-1508873696983-2dfd5898f375?auto=format&fit=crop&w=1350&q=80') no-repeat center center fixed;
+      background-size: cover;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      backdrop-filter: brightness(0.85);
+    }
+
+    .container {
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 40px 10px;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+    }
+
+    h2 {
+      text-align: center;
+      margin-top: 0;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      padding: 8px 12px;
+      margin-left: 8px;
+      border: none;
+      border-radius: 6px;
+      background-color: #2196F3;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #1976D2;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Lista de Tarefas 🌞 Rio</h2>
+    <input type="text" id="novaTarefa" placeholder="Digite uma nova tarefa">
+    <button onclick="adicionarTarefa()">Adicionar</button>
+
+    <h3>Pendentes</h3>
+    <ul id="tarefasPendentes"></ul>
+
+    <h3>Concluídas</h3>
+    <ul id="tarefasConcluidas"></ul>
+  </div>
+
+  <script>
+    function adicionarTarefa() {
+      const input = document.getElementById('novaTarefa');
+      const texto = input.value.trim();
+      if (texto === '') return;
+
+      const li = document.createElement('li');
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.onchange = () => moverParaConcluidas(li);
+
+      const span = document.createElement('span');
+      span.textContent = texto;
+
+      li.appendChild(checkbox);
+      li.appendChild(span);
+
+      document.getElementById('tarefasPendentes').appendChild(li);
+      input.value = '';
+    }
+
+    function moverParaConcluidas(item) {
+      const checkbox = item.querySelector('input[type="checkbox"]');
+      checkbox.disabled = true;
+      document.getElementById('tarefasPendentes').removeChild(item);
+      document.getElementById('tarefasConcluidas').appendChild(item);
+    }
+  </script>
+</body>
+</html>
