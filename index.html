@@ -1,128 +1,160 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Lista para o Rio com meu amor</title>
+  <meta charset="UTF-8">
+  <title>Lista para o Rio de Janeiro com meu amor</title>
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: url('https://m.ahstatic.com/is/image/accorhotels/praias-desertas-do-rio-de-janeiro-2024-1:16by9?fmt=webp&op_usm=1.75,0.3,2,0&resMode=sharp2&iccEmbed=true&icc=sRGB&dpr=on,1&wid=1363&hei=766&qlt=80') no-repeat center center fixed;
-      background-size: cover;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
       margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-image: url('https://m.ahstatic.com/is/image/accorhotels/praias-desertas-do-rio-de-janeiro-2024-1:16by9?fmt=webp&op_usm=1.75,0.3,2,0&resMode=sharp2&iccEmbed=true&icc=sRGB&dpr=on,1&wid=1363&hei=766&qlt=80');
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
     }
+
     .container {
-      background-color: rgba(255, 255, 255, 0.9);
-      border-radius: 15px;
+      background: rgba(255, 255, 255, 0.9);
       padding: 30px;
+      border-radius: 15px;
       text-align: center;
+      width: 90%;
       max-width: 400px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
     }
+
     h1 {
-      font-family: 'Brush Script MT', cursive;
-      font-size: 24px;
+      font-family: 'Cursive', sans-serif;
+      font-size: 22px;
+      font-weight: bold;
+      margin-bottom: 20px;
     }
+
     input[type="text"] {
       width: 100%;
       padding: 10px;
-      margin: 15px 0;
+      font-size: 16px;
       border: 1px solid #ccc;
-      border-radius: 5px;
+      border-radius: 8px;
+      box-sizing: border-box;
+      outline: none;
     }
+
+    h2 {
+      margin-top: 30px;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
     ul {
       list-style: none;
       padding: 0;
-      margin: 10px 0;
+      margin-top: 10px;
     }
+
     li {
-      background-color: #f7f7f7;
-      margin-bottom: 10px;
-      padding: 10px;
-      border-radius: 5px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      background: rgba(255,255,255,0.7);
+      margin-bottom: 10px;
+      padding: 8px 12px;
+      border-radius: 8px;
     }
-    li.concluido {
+
+    li.concluido span {
       text-decoration: line-through;
       opacity: 0.5;
     }
+
     .botoes {
       display: flex;
       gap: 10px;
     }
+
     button {
-      background: none;
+      background: transparent;
       border: none;
-      cursor: pointer;
-      font-weight: bold;
       font-size: 16px;
+      cursor: pointer;
     }
-    .secao {
-      margin-top: 20px;
+
+    button:hover {
+      color: red;
+    }
+
+    span[contenteditable="true"] {
+      outline: none;
+      flex: 1;
+      text-align: left;
+    }
+
+    a {
+      text-decoration: underline;
+      color: black;
+      cursor: pointer;
+      font-size: 14px;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>Lista para o rio de janeiro com meu amor</h1>
-    <input type="text" id="novaTarefa" placeholder="Digite uma nova tarefa" />
-    <div class="secao">
-      <h3>Não esquecer</h3>
-      <ul id="listaTarefas"></ul>
-    </div>
-    <div class="secao">
-      <h3>Ver marcados</h3>
-      <ul id="listaConcluidos"></ul>
-    </div>
+    <input type="text" id="novaTarefa" placeholder="Digite uma nova tarefa">
+    <h2>Não esquecer</h2>
+    <ul id="listaNaoConcluidas"></ul>
+    <h2><a onclick="alternarMarcados()">Ver marcados</a></h2>
+    <ul id="listaConcluidas" style="display: none;"></ul>
   </div>
 
   <script>
-    const input = document.getElementById("novaTarefa");
-    const listaTarefas = document.getElementById("listaTarefas");
-    const listaConcluidos = document.getElementById("listaConcluidos");
+    const input = document.getElementById('novaTarefa');
+    const listaNaoConcluidas = document.getElementById('listaNaoConcluidas');
+    const listaConcluidas = document.getElementById('listaConcluidas');
 
-    input.addEventListener("keypress", function (e) {
-      if (e.key === "Enter" && input.value.trim() !== "") {
-        adicionarTarefa(input.value);
-        input.value = "";
+    input.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter' && input.value.trim() !== '') {
+        adicionarTarefa(input.value.trim());
+        input.value = '';
       }
     });
 
     function adicionarTarefa(texto) {
-      const li = document.createElement("li");
-      const span = document.createElement("span");
-      span.contentEditable = true;
-      span.innerText = texto;
+      const li = document.createElement('li');
+      const span = document.createElement('span');
+      span.textContent = texto;
+      span.contentEditable = "true";
 
-      const btnConcluir = document.createElement("button");
-      btnConcluir.innerText = "✓";
-      btnConcluir.onclick = () => {
-        li.remove();
-        span.classList.add("concluido");
-        const liConcluido = document.createElement("li");
-        liConcluido.classList.add("concluido");
-        liConcluido.appendChild(span);
-        listaConcluidos.appendChild(liConcluido);
+      const botoes = document.createElement('div');
+      botoes.classList.add('botoes');
+
+      const botaoCheck = document.createElement('button');
+      botaoCheck.textContent = '✔️';
+      botaoCheck.onclick = () => {
+        span.style.textDecoration = 'line-through';
+        li.classList.add('concluido');
+        listaConcluidas.appendChild(li);
       };
 
-      const btnExcluir = document.createElement("button");
-      btnExcluir.innerText = "x";
-      btnExcluir.onclick = () => li.remove();
+      const botaoExcluir = document.createElement('button');
+      botaoExcluir.textContent = '❌';
+      botaoExcluir.onclick = () => li.remove();
 
-      const botoes = document.createElement("div");
-      botoes.className = "botoes";
-      botoes.appendChild(btnConcluir);
-      botoes.appendChild(btnExcluir);
+      botoes.appendChild(botaoCheck);
+      botoes.appendChild(botaoExcluir);
 
       li.appendChild(span);
       li.appendChild(botoes);
-      listaTarefas.appendChild(li);
+
+      listaNaoConcluidas.appendChild(li);
+    }
+
+    function alternarMarcados() {
+      listaConcluidas.style.display = listaConcluidas.style.display === 'none' ? 'block' : 'none';
     }
   </script>
 </body>
